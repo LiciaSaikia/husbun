@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>love</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bitcount+Grid+Double:wght@100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --red:#ff2d55;
+  --pink:#ff6b91;
+  --rose:#ffb3c6;
+  --glow:#ff2d5588;
+}
+html,body{
+  width:100%;min-height:100vh;
+  background:#000;
+  color:#fff;
+  font-family:'Bitcount Grid Double',monospace;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  overflow-x:hidden;
+}
+
+/* starfield */
+#stars{
+  position:fixed;inset:0;z-index:0;
+  background:radial-gradient(ellipse at 50% 40%,#160004 0%,#000 70%);
+  pointer-events:none;overflow:hidden;
+}
+.star{
+  position:absolute;border-radius:50%;background:#fff;
+  animation:tw var(--d) ease-in-out infinite alternate;
+}
+@keyframes tw{from{opacity:.08}to{opacity:.8}}
+
+/* header */
+header{
+  position:relative;z-index:10;
+  margin-top:18px;text-align:center;
+}
+header h1{
+  font-family:'Bitcount Grid Double',monospace;
+  font-weight:700;
+  font-size:clamp(.85rem,2vw,1.4rem);
+  color:var(--pink);
+  letter-spacing:.2em;
+  text-shadow:0 0 24px var(--glow),0 0 56px var(--glow);
+  animation:hpulse 2.8s ease-in-out infinite;
+}
+@keyframes hpulse{
+  0%,100%{text-shadow:0 0 16px var(--glow),0 0 44px var(--glow);}
+  50%{text-shadow:0 0 32px var(--red),0 0 72px var(--red),0 0 110px var(--glow);}
+}
+
+/* ASCII heart */
+#heart-wrap{
+  position:relative;z-index:10;
+  margin-top:8px;
+}
+#d{
+  font-family:'Bitcount Grid Double',monospace;
+  font-size:clamp(10px,1.9vw,17px);
+  line-height:1.04;
+  white-space:pre;
+  color:var(--red);
+  text-shadow:0 0 6px var(--glow);
+  filter:drop-shadow(0 0 18px var(--glow));
+  user-select:none;
+  display:block;
+  /* 80 cols x 23 rows — matches the heart output buffer */
+}
+
+/* message */
+#message{
+  position:relative;z-index:10;
+  text-align:center;
+  margin-top:12px;padding:0 16px;
+}
+.line1{
+  font-family:'Bitcount Grid Double',monospace;
+  font-weight:700;
+  font-size:clamp(.85rem,2vw,1.4rem);
+  color:var(--pink);
+  letter-spacing:.12em;
+  text-shadow:0 0 20px var(--glow);
+  animation:hb 1.4s ease-in-out infinite;
+}
+@keyframes hb{
+  0%,100%{transform:scale(1)}
+  15%{transform:scale(1.07)}
+  30%{transform:scale(.97)}
+  45%{transform:scale(1.04)}
+}
+.line2{
+  font-family:'Bitcount Grid Double',monospace;
+  font-weight:300;
+  font-size:clamp(.58rem,1.2vw,.78rem);
+  color:var(--rose);
+  margin-top:6px;letter-spacing:.06em;opacity:.86;line-height:1.8;
+}
+
+/* asymptote */
+#asym-section{
+  position:relative;z-index:10;
+  display:flex;flex-direction:column;align-items:center;
+  margin:32px 20px 20px;gap:12px;
+  width:min(660px,95vw);
+}
+.asym-caption{
+  font-family:'Bitcount Grid Double',monospace;
+  font-size:clamp(.66rem,1.6vw,.86rem);
+  color:#ff6b9199;letter-spacing:.14em;text-align:center;
+}
+.asym-caption span{color:var(--pink);text-shadow:0 0 10px var(--glow);}
+#asym-wrap{
+  width:100%;
+  border:1px solid #ff2d5530;border-radius:12px;
+  background:#080002;
+  box-shadow:0 0 40px #ff2d5515,inset 0 0 50px #000;
+  padding:8px;overflow:hidden;position:relative;
+}
+#asym-wrap::before{
+  content:'';position:absolute;inset:0;border-radius:12px;
+  background:radial-gradient(ellipse at 50% 0%,#ff2d5510,transparent 65%);
+  pointer-events:none;
+}
+canvas#asym{display:block;width:100%;height:auto;}
+
+/* footer */
+footer{
+  position:relative;z-index:10;
+  font-family:'Bitcount Grid Double',monospace;
+  font-size:.62rem;color:#ff2d5530;letter-spacing:.22em;
+  padding:24px 0 34px;text-align:center;
+}
+</style>
+</head>
+<body>
+
+<div id="stars"></div>
+
+<header><h1>HUSBUNNN</h1></header>
+
+<div id="heart-wrap"><pre id="d"></pre></div>
+
+<div id="message">
+  <div class="line1">I LOVE YOU, HUSBUNNN</div>
+  <div class="line2">
+    my love is always gonna be asymptotic<br>
+    &mdash; forever approaching infinity, never stopping &mdash;
+  </div>
+</div>
+
+<div id="asym-section">
+  <p class="asym-caption">
+    <span>MY LOVE FOR YOU</span> &nbsp;&middot;&nbsp;
+    y = 1/(1&minus;x) &nbsp;&rarr;&nbsp; approaches &infin; as x &rarr; 1
+  </p>
+  <div id="asym-wrap">
+    <canvas id="asym" width="640" height="270"></canvas>
+  </div>
+</div>
+
+<footer>from boo</footer>
+
+<script>
+/* =========================================================
+   STARS
+========================================================= */
+(function(){
+  const el=document.getElementById('stars');
+  for(let i=0;i<110;i++){
+    const s=document.createElement('div');
+    s.className='star';
+    const sz=Math.random()*2+.3;
+    s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${(Math.random()*3+1.5).toFixed(2)}s;animation-delay:${(Math.random()*5).toFixed(2)}s`;
+    el.appendChild(s);
+  }
+})();
+
+/* =========================================================
+   3-D SPINNING ASCII HEART
+   ─────────────────────────────────────────────────────────
+   Identical algorithm to donut.c / donut.js EXCEPT the
+   torus surface is replaced by a HEART tube surface.
+
+   Donut parametrisation (reference):
+     torus point: x = (R2 + R1·cos θ)·cos φ
+                  y = (R2 + R1·cos θ)·sin φ
+                  z = R1·sin θ
+
+   Heart parametrisation (this code):
+     We define a 2-D heart spine via the classic formula:
+       spineX(u) = 16·sin³(u)            (scaled /17)
+       spineY(u) = 13cos(u)−5cos2u−2cos3u−cos4u  (scaled /17)
+     then extrude a circle of radius R around it to form
+     a closed tubular surface, exactly like the torus tube.
+
+     Frenet frame at each spine point gives us the two
+     perpendicular directions (normal N, binormal B̂) so we
+     can write the surface point as:
+       P(u,v) = spine(u) + R·[cos(v)·N̂(u) + sin(v)·Ẑ]
+     where Ẑ = (0,0,1) is the z-axis (always perpendicular
+     to the XY heart plane), and N̂ is the 2-D outward normal
+     in the XY plane.
+
+   After computing P(u,v), we apply the same two rotation
+   matrices (A around X, B around Z — same convention as the
+   original donut) and the same perspective + z-buffer logic.
+
+   Luminance is computed the same way as the original:
+     L = N_rotated · light_direction
+   where the surface normal at P(u,v) is:
+     n(u,v) = cos(v)·N̂(u) + sin(v)·Ẑ
+   rotated by the same matrices.
+========================================================= */
+(function(){
+  const pre   = document.getElementById('d');
+  const COLS  = 110;   // output columns (must end each row with \n → 81 chars)
+  const ROWS  = 38;   // output rows
+  const BUF   = COLS * ROWS;
+
+  const SHADE = '.,-~:;=!*#$@';
+
+  // rotation speeds (same as original donut)
+  let A = 1, B = 1;
+  const dA = 0.07, dB = 0.03;
+
+  // heart tube radius
+  const R = 0.38;
+
+  // perspective constant (1/z denominator offset)
+  const K2 = 5;
+
+  // screen scale — tweak to fill the 110×38 grid nicely
+  const K1x = 38; // horizontal scale (cols are ~half as wide as rows are tall)
+  const K1y = 20; // vertical scale
+
+  // ── precompute heart spine once (u samples) ──────────────
+  const uSteps = 300;
+  const spine  = [];  // {x,y,nx,ny}  spine point + 2-D outward normal
+
+  for(let ui = 0; ui < uSteps; ui++){
+    const u  = (ui / uSteps) * Math.PI * 2;
+    const su = Math.sin(u), cu = Math.cos(u);
+
+    const hx = 16*su*su*su / 17;
+    const hy = (13*cu - 5*Math.cos(2*u) - 2*Math.cos(3*u) - Math.cos(4*u)) / 17;
+
+    // tangent by finite difference (forward)
+    const u2 = ((ui+1) % uSteps / uSteps) * Math.PI * 2;
+    const su2= Math.sin(u2), cu2=Math.cos(u2);
+    const hx2= 16*su2*su2*su2 / 17;
+    const hy2= (13*cu2 - 5*Math.cos(2*u2) - 2*Math.cos(3*u2) - Math.cos(4*u2)) / 17;
+
+    let tx = hx2 - hx, ty = hy2 - hy;
+    const tl = Math.sqrt(tx*tx + ty*ty) || 1e-9;
+    tx /= tl; ty /= tl;
+
+    // 2-D outward normal = rotate tangent +90° (CCW gives outward for CCW heart)
+    // For the heart curve traced CCW, rotating tangent by +90° points outward.
+    const nx =  ty;   // +90° rotation: (tx,ty) → (-ty, tx) ... wait:
+    const ny = -tx;   // rotate CCW 90°: (x,y)→(-y,x)
+    // Actually we want OUTWARD. For a CCW-traced curve, the outward
+    // normal is obtained by rotating the tangent CW 90°: (tx,ty)→(ty,-tx)
+    // We'll store both and pick sign by checking that it points away from centroid.
+    // Heart centroid is roughly (0, 0.3).
+    // outward test: dot( (hx - cx, hy - cy), normal ) > 0
+    const cx0 = 0, cy0 = 0.18;
+    const outward = (hx - cx0)*ny + (hy - cy0)*(-tx) > 0 ? 1 : -1; // using CW version
+    // Final outward normal (CW rotation of tangent = (ty, -tx)):
+    const fnx = ty;
+    const fny = -tx;
+
+    spine.push({ hx, hy, nx: fnx * outward, ny: fny * outward });
+  }
+
+  // ── animation frame (identical logic to donut asciiframe) ──
+  function heartframe(){
+    A += dA;
+    B += dB;
+
+    const cA = Math.cos(A), sA = Math.sin(A);
+    const cB = Math.cos(B), sB = Math.sin(B);
+
+    // b = character buffer,  z = depth buffer (stores 1/Z, higher = closer)
+    const b = new Array(BUF);
+    const z = new Float32Array(BUF);
+    for(let k = 0; k < BUF; k++){ b[k] = ' '; z[k] = 0; }
+
+    const vSteps = 100; // steps around tube cross-section
+
+    for(let ui = 0; ui < uSteps; ui++){
+      const sp = spine[ui];
+      const { hx, hy, nx, ny } = sp;
+      // binormal in object space = Z axis (0,0,1) always perpendicular to XY plane
+
+      for(let vi = 0; vi < vSteps; vi++){
+        const v  = (vi / vSteps) * Math.PI * 2;
+        const cv = Math.cos(v), sv = Math.sin(v);
+
+        // ── surface point (object space, Z-up heart in XY plane) ──
+        // P = spine + R*(cos(v)*N̂  +  sin(v)*Ẑ)
+        // N̂ = (nx, ny, 0),  Ẑ = (0, 0, 1)
+        const ox = hx + R * nx * cv;
+        const oy = hy + R * ny * cv;
+        const oz =       R * sv;        // z component from binormal (Z-axis)
+
+        // ── surface normal (object space) ──
+        // n = cos(v)*N̂ + sin(v)*Ẑ
+        const enx = nx * cv;
+        const eny = ny * cv;
+        const enz = sv;
+
+        // ── Rotation 1: around X-axis by A ──
+        //   x' =  x
+        //   y' =  y·cA − z·sA
+        //   z' =  y·sA + z·cA
+        const x1  = ox;
+        const y1  = oy*cA - oz*sA;
+        const z1  = oy*sA + oz*cA;
+        const nx1 = enx;
+        const ny1 = eny*cA - enz*sA;
+        const nz1 = eny*sA + enz*cA;
+
+        // ── Rotation 2: around Z-axis by B ──
+        //   x' =  x·cB − y·sB
+        //   y' =  x·sB + y·cB
+        //   z' =  z
+        const x2  = x1*cB - y1*sB;
+        const y2  = x1*sB + y1*cB;
+        const z2  = z1;
+        const nx2 = nx1*cB - ny1*sB;
+        const ny2 = nx1*sB + ny1*cB;
+        const nz2 = nz1;
+
+        // ── Perspective projection (same formula as donut) ──
+        // D = 1/(z2 + K2)   (depth, higher = closer)
+        const D = 1 / (z2 + K2);
+        if(D <= 0) continue;
+
+        // screen coords  (centre = col 55, row 19)
+        const xp = 0 | (55 + K1x * D * x2);
+        const yp = 0 | (19 - K1y * D * y2);
+
+        if(xp < 0 || xp >= COLS-1 || yp < 0 || yp >= ROWS) continue;
+
+        const o = xp + COLS * yp;
+
+        if(D > z[o]){
+          z[o] = D;
+
+          // ── Luminance: same 0-11 index as donut ──
+          // Light direction (world space): approximately (0, 1, -1) normalised
+          // Original donut uses the N index formula directly.
+          // Here we use dot product: L = n · light
+          // light = (0.0, 0.7, -0.7) (from above-front)
+          const L = nx2*0.0 + ny2*0.7 + nz2*(-0.7);
+          const N = 0 | (8 * (L + 0.5));  // map [-0.5..1.5] → [0..12]
+          b[o] = SHADE[ N > 0 ? (N < SHADE.length ? N : SHADE.length-1) : 0 ];
+        }
+      }
+    }
+
+    // ── build output string (80 chars + \n per row) ──
+    let s = '';
+    for(let row = 0; row < ROWS; row++){
+      for(let col = 0; col < COLS; col++) s += b[col + COLS*row];
+      s += '\n';
+    }
+    pre.innerHTML = s;
+  }
+
+  setInterval(heartframe, 50);
+  heartframe();
+})();
+
+
+/* =========================================================
+   LIVE ASYMPTOTE CANVAS
+========================================================= */
+(function(){
+  const canvas = document.getElementById('asym');
+  const ctx    = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const xMin=-2.6, xMax=2.6, yMin=-7, yMax=7;
+  let t = 0;
+
+  function toS(x,y){
+    return[
+      ((x-xMin)/(xMax-xMin))*W,
+      H - ((y-yMin)/(yMax-yMin))*H
+    ];
+  }
+
+  function draw(){
+    ctx.fillStyle='#080002';
+    ctx.fillRect(0,0,W,H);
+
+    // grid
+    ctx.strokeStyle='#ff2d5510'; ctx.lineWidth=.5;
+    for(let gx=Math.ceil(xMin);gx<=xMax;gx++){
+      const[sx]=toS(gx,0);
+      ctx.beginPath();ctx.moveTo(sx,0);ctx.lineTo(sx,H);ctx.stroke();
+    }
+    for(let gy=Math.ceil(yMin);gy<=yMax;gy++){
+      const[,sy]=toS(0,gy);
+      ctx.beginPath();ctx.moveTo(0,sy);ctx.lineTo(W,sy);ctx.stroke();
+    }
+
+    // axes
+    ctx.strokeStyle='#ff2d5540'; ctx.lineWidth=1;
+    const[,ay]=toS(0,0); const[ax]=toS(0,0);
+    ctx.beginPath();ctx.moveTo(0,ay);ctx.lineTo(W,ay);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(ax,0);ctx.lineTo(ax,H);ctx.stroke();
+
+    // asymptote x=1
+    ctx.setLineDash([5,4]);
+    ctx.strokeStyle='#ff6b9155'; ctx.lineWidth=1.4;
+    const[asx]=toS(1,0);
+    ctx.beginPath();ctx.moveTo(asx,0);ctx.lineTo(asx,H);ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle='#ff6b9188';
+    ctx.font='500 10px "Bitcount Grid Double",monospace';
+    ctx.fillText('x=1',asx+4,13);
+
+    // curve branches
+    function branch(from,to,col){
+      ctx.beginPath();
+      ctx.strokeStyle=col; ctx.lineWidth=2.2;
+      ctx.shadowColor=col; ctx.shadowBlur=10;
+      let started=false;
+      for(let i=0;i<=600;i++){
+        const x=from+(to-from)*(i/600);
+        const y=1/(1-x);
+        if(y<yMin||y>yMax){started=false;continue;}
+        const[sx,sy]=toS(x,y);
+        if(!started){ctx.moveTo(sx,sy);started=true;}
+        else ctx.lineTo(sx,sy);
+      }
+      ctx.stroke(); ctx.shadowBlur=0;
+    }
+    branch(xMin,.9995,'#ff2d55');
+    branch(1.0005,xMax,'#ff6b91');
+
+    // axis labels
+    ctx.fillStyle='#ff2d5555';
+    ctx.font='11px "Bitcount Grid Double",monospace';
+    ctx.fillText('x',W-12,ay-6);
+    ctx.fillText('y',ax+6,13);
+    ctx.fillStyle='#ff6b9177';
+    ctx.fillText('y=1/(1-x)',W-100,26);
+
+    // animated tracing dot
+    const period=5;
+    const frac=(t%period)/period;
+    const xDot=xMin+frac*(0.93-xMin);
+    const yDot=1/(1-xDot);
+    if(yDot>=yMin&&yDot<=yMax){
+      const[dx,dy]=toS(xDot,yDot);
+      const rg=ctx.createRadialGradient(dx,dy,0,dx,dy,12);
+      rg.addColorStop(0,'#ff2d5544');rg.addColorStop(1,'#ff2d5500');
+      ctx.beginPath();ctx.arc(dx,dy,12,0,Math.PI*2);
+      ctx.fillStyle=rg;ctx.fill();
+      ctx.beginPath();ctx.arc(dx,dy,4,0,Math.PI*2);
+      ctx.fillStyle='#fff';
+      ctx.shadowColor='#ff2d55';ctx.shadowBlur=14;
+      ctx.fill(); ctx.shadowBlur=0;
+      ctx.fillStyle='#ffb3c6bb';
+      ctx.font='10px "Bitcount Grid Double",monospace';
+      ctx.fillText(`(${xDot.toFixed(2)}, ${yDot.toFixed(1)})`,dx+10,dy-8);
+    }
+
+    t += 0.033;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+</body>
+</html>
