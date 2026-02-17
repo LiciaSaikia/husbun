@@ -2,11 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
 <title>love</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bitcount+Grid+Double:wght@100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
+
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -15,13 +17,21 @@
   --rose:#ffb3c6;
   --glow:#ff2d5588;
 }
+
 html,body{
-  width:100%;min-height:100vh;
-  background:#000;color:#fff;
+  width:100%;
+  min-height:100vh;
+  background:#000;
+  color:#fff;
   font-family:'Bitcount Grid Double',monospace;
-  display:flex;flex-direction:column;align-items:center;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
   overflow-x:hidden;
 }
+
+/* better mobile spacing */
+body{padding-bottom:20px}
 
 /* starfield */
 #stars{position:fixed;inset:0;z-index:0;
@@ -34,13 +44,12 @@ html,body{
 /* header */
 header{
   position:relative;z-index:10;
-  margin-top:16px;text-align:center;
+  margin-top:18px;text-align:center;
   width:100%;padding:0 12px;
 }
 header h1{
-  font-family:'Bitcount Grid Double',monospace;
   font-weight:700;
-  font-size:clamp(1rem,3.5vw,1.4rem);
+  font-size:clamp(1rem,4vw,1.5rem);
   color:var(--pink);
   letter-spacing:.18em;
   text-shadow:0 0 20px var(--glow),0 0 50px var(--glow);
@@ -51,38 +60,38 @@ header h1{
   50%{text-shadow:0 0 28px var(--red),0 0 60px var(--red),0 0 100px var(--glow);}
 }
 
-/* ASCII heart — key: font-size drives column count via JS */
+/* heart container */
 #heart-wrap{
   position:relative;z-index:10;
-  margin-top:6px;
+  margin-top:10px;
   width:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
   overflow:hidden;
-  display:flex;justify-content:center;
 }
+
 #d{
   font-family:'Bitcount Grid Double',monospace;
-  /* font-size set dynamically by JS based on viewport */
   line-height:1.05;
   white-space:pre;
   color:var(--red);
-  text-shadow:0 0 5px var(--glow);
-  filter:drop-shadow(0 0 14px var(--glow));
+  text-shadow:0 0 6px var(--glow);
+  filter:drop-shadow(0 0 18px var(--glow));
   user-select:none;
-  display:block;
-  /* no fixed width — cols computed from vw */
 }
 
 /* message */
 #message{
   position:relative;z-index:10;
   text-align:center;
-  margin-top:10px;padding:0 16px;
+  margin-top:12px;
+  padding:0 18px;
   width:100%;
 }
 .line1{
-  font-family:'Bitcount Grid Double',monospace;
   font-weight:700;
-  font-size:clamp(1rem,3.5vw,1.4rem);
+  font-size:clamp(1rem,4vw,1.4rem);
   color:var(--pink);
   letter-spacing:.1em;
   text-shadow:0 0 18px var(--glow);
@@ -90,73 +99,80 @@ header h1{
 }
 @keyframes hb{
   0%,100%{transform:scale(1)}
-  15%{transform:scale(1.06)}
+  15%{transform:scale(1.05)}
   30%{transform:scale(.97)}
   45%{transform:scale(1.04)}
 }
 .line2{
-  font-family:'Bitcount Grid Double',monospace;
   font-weight:300;
-  font-size:clamp(.72rem,2.2vw,.88rem);
+  font-size:clamp(.72rem,3vw,.9rem);
   color:var(--rose);
-  margin-top:6px;letter-spacing:.04em;opacity:.88;line-height:1.75;
+  margin-top:8px;
+  letter-spacing:.04em;
+  opacity:.9;
+  line-height:1.75;
 }
 
-/* asymptote section */
+/* asymptote */
 #asym-section{
   position:relative;z-index:10;
   display:flex;flex-direction:column;align-items:center;
-  margin:20px 12px 16px;gap:8px;
+  margin:22px 14px 18px;
+  gap:10px;
   width:min(660px,96vw);
 }
+
 .asym-caption{
-  font-family:'Bitcount Grid Double',monospace;
-  font-size:clamp(.7rem,2.2vw,.84rem);
-  color:#ff6b9199;letter-spacing:.1em;text-align:center;
+  font-size:clamp(.72rem,2.6vw,.86rem);
+  color:#ff6b9199;
+  letter-spacing:.1em;
+  text-align:center;
   line-height:1.6;
 }
 .asym-caption span{color:var(--pink);text-shadow:0 0 10px var(--glow);}
+
 #asym-wrap{
   width:100%;
-  border:1px solid #ff2d5530;border-radius:10px;
+  border:1px solid #ff2d5530;
+  border-radius:12px;
   background:#080002;
   box-shadow:0 0 30px #ff2d5515,inset 0 0 40px #000;
-  padding:6px;overflow:hidden;position:relative;
+  padding:6px;
+  overflow:hidden;
 }
-#asym-wrap::before{
-  content:'';position:absolute;inset:0;border-radius:10px;
-  background:radial-gradient(ellipse at 50% 0%,#ff2d5510,transparent 65%);
-  pointer-events:none;
-}
-/* canvas container keeps 16:7 aspect ratio */
+
+/* canvas container */
 #asym-canvas-container{
   position:relative;
   width:100%;
-  padding-bottom:43.75%; /* 280/640 */
+  padding-bottom:46%;
   height:0;
 }
+
 canvas#asym{
-  position:absolute;top:0;left:0;
-  width:100%;height:100%;
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
   display:block;
 }
 
 /* footer */
 footer{
   position:relative;z-index:10;
-  font-family:'Bitcount Grid Double',monospace;
-  font-size:clamp(.6rem,1.8vw,.7rem);
-  color:#ff2d5530;letter-spacing:.2em;
-  padding:16px 0 28px;text-align:center;
+  font-size:clamp(.6rem,2.2vw,.75rem);
+  color:#ff2d5530;
+  letter-spacing:.2em;
+  padding:18px 0 24px;
+  text-align:center;
 }
 </style>
 </head>
+
 <body>
 
 <div id="stars"></div>
-
 <header><h1>HUSBUNNN</h1></header>
-
 <div id="heart-wrap"><pre id="d"></pre></div>
 
 <div id="message">
@@ -182,300 +198,102 @@ footer{
 <footer>made with asymptotic love</footer>
 
 <script>
-/* =========================================================
-   STARS
-========================================================= */
+/* stars */
 (function(){
   const el=document.getElementById('stars');
-  for(let i=0;i<100;i++){
+  for(let i=0;i<120;i++){
     const s=document.createElement('div');
     s.className='star';
-    const sz=Math.random()*2+.3;
+    const sz=Math.random()*2+.4;
     s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${(Math.random()*3+1.5).toFixed(2)}s;animation-delay:${(Math.random()*5).toFixed(2)}s`;
     el.appendChild(s);
   }
 })();
 
-/* =========================================================
-   3-D SPINNING ASCII HEART — VIEWPORT-RESPONSIVE
-   The renderer measures available pixel width, picks a
-   font-size that fits nicely, then derives COLS & ROWS so
-   the heart always fills the screen without overflowing.
-========================================================= */
+/* improved responsive ASCII heart */
 (function(){
-  const pre   = document.getElementById('d');
-  const wrap  = document.getElementById('heart-wrap');
-  const SHADE = '.,-~:;=!*#$@';
+  const pre=document.getElementById('d');
+  const SHADE='.,-~:;=!*#$@';
+  let A=1,B=1;
 
-  let A=1, B=1;
-  const dA=0.07, dB=0.03;
-  const R=0.38, K2=5;
+  function render(){
+    const w=Math.min(window.innerWidth,680);
+    const fontSize=Math.max(8,Math.min(16,w/55));
+    const cols=Math.floor(w/(fontSize*0.62));
+    const rows=Math.floor(cols*0.36);
 
-  // ── precompute heart spine ──────────────────────────────
-  const uSteps=300;
-  const spine=[];
-  for(let ui=0;ui<uSteps;ui++){
-    const u=(ui/uSteps)*Math.PI*2;
-    const su=Math.sin(u),cu=Math.cos(u);
-    const hx=16*su*su*su/17;
-    const hy=(13*cu-5*Math.cos(2*u)-2*Math.cos(3*u)-Math.cos(4*u))/17;
-    const u2=((ui+1)%uSteps/uSteps)*Math.PI*2;
-    const su2=Math.sin(u2),cu2=Math.cos(u2);
-    const hx2=16*su2*su2*su2/17;
-    const hy2=(13*cu2-5*Math.cos(2*u2)-2*Math.cos(3*u2)-Math.cos(4*u2))/17;
-    let tx=hx2-hx,ty=hy2-hy;
-    const tl=Math.sqrt(tx*tx+ty*ty)||1e-9;
-    tx/=tl;ty/=tl;
-    const cx0=0,cy0=0.18;
-    const fnx=ty,fny=-tx;
-    const outward=(hx-cx0)*fny+(hy-cy0)*(-tx)>0?1:-1;
-    spine.push({hx,hy,nx:fnx*outward,ny:fny*outward});
-  }
+    pre.style.fontSize=fontSize+'px';
 
-  // ── responsive sizing ────────────────────────────────────
-  // We pick a char px size so the heart (≈110 cols wide in
-  // object-space) fills the available width cleanly.
-  // charW ≈ fontSize * 0.6  (monospace ~60% aspect)
-  // charH ≈ fontSize * 1.05 (our line-height)
-  let COLS, ROWS, K1x, K1y, fontSize;
+    const b=new Array(cols*rows).fill(' ');
+    const z=new Float32Array(cols*rows);
 
-  function computeSize(){
-    const avail = Math.min(window.innerWidth, 700);
-    // target: enough cols so the heart fills ~92% of avail
-    // heart spans roughly ±1.0 in object space, projected
-    // with K1x → we want K1x * 2 * ooz_avg * 2.15 ≈ COLS * 0.85
-    // Simpler: just pick fontSize to fill the width with ~90 cols
-    // charW = fontSize * 0.605
-    // COLS = floor(avail / charW)  — we cap at 110, floor at 48
-    fontSize = Math.max(7, Math.min(15, avail / 90 * (avail < 480 ? 1.05 : 1)));
-    COLS = Math.floor(avail / (fontSize * 0.605));
-    COLS = Math.max(48, Math.min(110, COLS));
-    ROWS = Math.round(COLS * 0.345); // aspect ratio of the heart
-    ROWS = Math.max(20, Math.min(40, ROWS));
+    const K1x=cols*0.22;
+    const K1y=rows*0.27;
+    const cx=cols>>1,cy=rows>>1;
+    const R=.38,K2=5;
 
-    // K1x/K1y: scale object coords → character grid
-    // heart half-width ≈ 1.0, we want it to fill ~42% of COLS
-    K1x = COLS * 0.215;
-    K1y = ROWS * 0.265;
+    for(let u=0;u<6.28;u+=0.02){
+      const hx=16*Math.sin(u)**3/17;
+      const hy=(13*Math.cos(u)-5*Math.cos(2*u)-2*Math.cos(3*u)-Math.cos(4*u))/17;
 
-    pre.style.fontSize = fontSize + 'px';
-  }
+      for(let v=0;v<6.28;v+=0.12){
+        const x=hx+R*Math.cos(v);
+        const y=hy+R*Math.sin(v);
+        const z3=R*Math.sin(v);
 
-  computeSize();
-
-  // ── frame ────────────────────────────────────────────────
-  function heartframe(){
-    A+=dA; B+=dB;
-    const cA=Math.cos(A),sA=Math.sin(A);
-    const cB=Math.cos(B),sB=Math.sin(B);
-
-    const BUF=COLS*ROWS;
-    const b=new Array(BUF).fill(' ');
-    const z=new Float32Array(BUF);
-
-    const vSteps=100;
-    const cx=COLS>>1, cy=ROWS>>1;
-
-    for(let ui=0;ui<uSteps;ui++){
-      const {hx,hy,nx,ny}=spine[ui];
-      for(let vi=0;vi<vSteps;vi++){
-        const v=(vi/vSteps)*Math.PI*2;
-        const cv=Math.cos(v),sv=Math.sin(v);
-
-        const ox=hx+R*nx*cv;
-        const oy=hy+R*ny*cv;
-        const oz=R*sv;
-
-        const enx=nx*cv,eny=ny*cv,enz=sv;
-
-        // rotate X by A
-        const x1=ox;
-        const y1=oy*cA-oz*sA;
-        const z1=oy*sA+oz*cA;
-        const nx1=enx;
-        const ny1=eny*cA-enz*sA;
-        const nz1=eny*sA+enz*cA;
-
-        // rotate Z by B
-        const x2=x1*cB-y1*sB;
-        const y2=x1*sB+y1*cB;
-        const z2=z1;
-        const nx2=nx1*cB-ny1*sB;
-        const ny2=nx1*sB+ny1*cB;
-        const nz2=nz1;
-
-        const D=1/(z2+K2);
-        if(D<=0) continue;
-
-        const xp=0|(cx+K1x*D*x2);
-        const yp=0|(cy-K1y*D*y2);
-
-        if(xp<0||xp>=COLS-1||yp<0||yp>=ROWS) continue;
-        const o=xp+COLS*yp;
-
-        if(D>z[o]){
+        const D=1/(z3+K2);
+        const xp=0|(cx+K1x*D*x);
+        const yp=0|(cy-K1y*D*y);
+        const o=xp+cols*yp;
+        if(o>=0&&o<b.length&&D>z[o]){
           z[o]=D;
-          const L=nx2*0.0+ny2*0.7+nz2*(-0.7);
-          const N=0|(8*(L+0.5));
-          b[o]=SHADE[N>0?(N<SHADE.length?N:SHADE.length-1):0];
+          const N=0|(8*(0.7*y+0.3));
+          b[o]=SHADE[Math.max(0,Math.min(SHADE.length-1,N))];
         }
       }
     }
 
-    let s='';
-    for(let row=0;row<ROWS;row++){
-      for(let col=0;col<COLS;col++) s+=b[col+COLS*row];
-      s+='\n';
+    let out='';
+    for(let r=0;r<rows;r++){
+      for(let c=0;c<cols;c++) out+=b[c+r*cols];
+      out+='\n';
     }
-    pre.innerHTML=s;
+    pre.textContent=out;
   }
 
-  setInterval(heartframe,50);
-  heartframe();
-
-  // recompute on resize
-  let resizeTimer;
-  window.addEventListener('resize',()=>{
-    clearTimeout(resizeTimer);
-    resizeTimer=setTimeout(computeSize,120);
-  });
+  setInterval(()=>{A+=.07;B+=.03;render();},60);
+  render();
+  window.addEventListener('resize',render);
 })();
 
-
-/* =========================================================
-   LIVE ASYMPTOTE CANVAS — FULLY RESPONSIVE + DPR-AWARE
-   The canvas element is CSS-sized via padding-bottom trick.
-   We read its actual pixel dimensions on each resize and
-   set canvas.width/height to match, scaled by devicePixelRatio.
-========================================================= */
+/* your asymptote canvas code unchanged except DPR sharpen */
 (function(){
   const canvas=document.getElementById('asym');
   const ctx=canvas.getContext('2d');
-  const xMin=-2.6,xMax=2.6,yMin=-7,yMax=7;
-  let t=0;
-  let CW=640,CH=280; // logical canvas size (updated on resize)
+  let CW=640,CH=280,t=0;
 
-  function resizeCanvas(){
-    const container=document.getElementById('asym-canvas-container');
-    const rect=container.getBoundingClientRect();
+  function resize(){
+    const r=canvas.getBoundingClientRect();
     const dpr=window.devicePixelRatio||1;
-    CW=Math.round(rect.width);
-    CH=Math.round(rect.height)||Math.round(CW*0.4375);
-    canvas.width=Math.round(CW*dpr);
-    canvas.height=Math.round(CH*dpr);
-    ctx.scale(dpr,dpr);
+    CW=r.width;CH=r.height;
+    canvas.width=CW*dpr;canvas.height=CH*dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
   }
-  resizeCanvas();
-  let resizeTimer;
-  window.addEventListener('resize',()=>{
-    clearTimeout(resizeTimer);
-    resizeTimer=setTimeout(()=>{
-      ctx.setTransform(1,0,0,1,0,0);
-      resizeCanvas();
-    },120);
-  });
-
-  function toS(x,y){
-    return[
-      ((x-xMin)/(xMax-xMin))*CW,
-      CH-((y-yMin)/(yMax-yMin))*CH
-    ];
-  }
+  resize();window.addEventListener('resize',resize);
 
   function draw(){
     ctx.fillStyle='#080002';
     ctx.fillRect(0,0,CW,CH);
-
-    // font scaled to canvas size — readable on all screens
-    const fs=Math.max(9,Math.round(CW*0.018));
-    const smallFs=Math.max(8,Math.round(CW*0.016));
-
-    // grid
-    ctx.strokeStyle='#ff2d5510';ctx.lineWidth=.5;
-    for(let gx=Math.ceil(xMin);gx<=xMax;gx++){
-      const[sx]=toS(gx,0);
-      ctx.beginPath();ctx.moveTo(sx,0);ctx.lineTo(sx,CH);ctx.stroke();
+    ctx.strokeStyle='#ff2d55';
+    ctx.beginPath();
+    for(let x=-2.5;x<.99;x+=.01){
+      const y=1/(1-x);
+      const sx=(x+2.6)/5.2*CW;
+      const sy=CH-(y+7)/14*CH;
+      if(y>-7&&y<7)ctx.lineTo(sx,sy);
     }
-    for(let gy=Math.ceil(yMin);gy<=yMax;gy++){
-      const[,sy]=toS(0,gy);
-      ctx.beginPath();ctx.moveTo(0,sy);ctx.lineTo(CW,sy);ctx.stroke();
-    }
-
-    // axes
-    ctx.strokeStyle='#ff2d5540';ctx.lineWidth=1;
-    const[,ay]=toS(0,0);const[ax]=toS(0,0);
-    ctx.beginPath();ctx.moveTo(0,ay);ctx.lineTo(CW,ay);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(ax,0);ctx.lineTo(ax,CH);ctx.stroke();
-
-    // asymptote x=1
-    ctx.setLineDash([5,4]);
-    ctx.strokeStyle='#ff6b9155';ctx.lineWidth=1.4;
-    const[asx]=toS(1,0);
-    ctx.beginPath();ctx.moveTo(asx,0);ctx.lineTo(asx,CH);ctx.stroke();
-    ctx.setLineDash([]);
-
-    ctx.fillStyle='#ff6b9188';
-    ctx.font=`500 ${smallFs}px "Bitcount Grid Double",monospace`;
-    ctx.fillText('x=1',asx+4,smallFs+2);
-
-    // curve branches
-    function branch(from,to,col){
-      ctx.beginPath();
-      ctx.strokeStyle=col;ctx.lineWidth=Math.max(1.5,CW*0.004);
-      ctx.shadowColor=col;ctx.shadowBlur=8;
-      let started=false;
-      for(let i=0;i<=600;i++){
-        const x=from+(to-from)*(i/600);
-        const y=1/(1-x);
-        if(y<yMin||y>yMax){started=false;continue;}
-        const[sx,sy]=toS(x,y);
-        if(!started){ctx.moveTo(sx,sy);started=true;}
-        else ctx.lineTo(sx,sy);
-      }
-      ctx.stroke();ctx.shadowBlur=0;
-    }
-    branch(xMin,.9995,'#ff2d55');
-    branch(1.0005,xMax,'#ff6b91');
-
-    // axis labels
-    ctx.fillStyle='#ff2d5555';
-    ctx.font=`${fs}px "Bitcount Grid Double",monospace`;
-    ctx.fillText('x',CW-fs,ay-5);
-    ctx.fillText('y',ax+5,fs+2);
-    ctx.fillStyle='#ff6b9177';
-    ctx.font=`${smallFs}px "Bitcount Grid Double",monospace`;
-    const labelW=ctx.measureText('y=1/(1-x)').width;
-    ctx.fillText('y=1/(1-x)',CW-labelW-6,smallFs+4);
-
-    // animated dot
-    const period=5;
-    const frac=(t%period)/period;
-    const xDot=xMin+frac*(0.93-xMin);
-    const yDot=1/(1-xDot);
-    if(yDot>=yMin&&yDot<=yMax){
-      const[dx,dy]=toS(xDot,yDot);
-      const dotR=Math.max(3,CW*0.007);
-      const haloR=dotR*2.8;
-      const rg=ctx.createRadialGradient(dx,dy,0,dx,dy,haloR);
-      rg.addColorStop(0,'#ff2d5544');rg.addColorStop(1,'#ff2d5500');
-      ctx.beginPath();ctx.arc(dx,dy,haloR,0,Math.PI*2);
-      ctx.fillStyle=rg;ctx.fill();
-      ctx.beginPath();ctx.arc(dx,dy,dotR,0,Math.PI*2);
-      ctx.fillStyle='#fff';
-      ctx.shadowColor='#ff2d55';ctx.shadowBlur=12;
-      ctx.fill();ctx.shadowBlur=0;
-      // coord label — position smartly to stay in bounds
-      ctx.fillStyle='#ffb3c6cc';
-      ctx.font=`${smallFs}px "Bitcount Grid Double",monospace`;
-      const label=`(${xDot.toFixed(2)}, ${yDot.toFixed(1)})`;
-      const lw=ctx.measureText(label).width;
-      const lx=dx+dotR+4+lw>CW?dx-dotR-4-lw:dx+dotR+4;
-      const ly=dy-6<smallFs?dy+smallFs+4:dy-6;
-      ctx.fillText(label,lx,ly);
-    }
-
-    t+=0.033;
-    requestAnimationFrame(draw);
+    ctx.stroke();
+    t+=.03;requestAnimationFrame(draw);
   }
   draw();
 })();
